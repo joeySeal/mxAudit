@@ -143,6 +143,7 @@ def process_item(item):
 def process_list(l):
     result = []
     for item in l:
+        print('Processing %s' % item['ip'])
         try:
             r = process_item(item)
             if r:
