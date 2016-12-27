@@ -2,7 +2,7 @@
 This tool retrieves all information from the mobotix camera info page and adds it to a csv file 
 
 Prerequisites
-Python 3.X (can be downloaded here)
+Python 3.X (https://www.python.org/downloads/)
 
  
 
