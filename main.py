@@ -114,7 +114,11 @@ def process_item(item):
     p = HTMLTableParser()
     p.feed(html)
 
-    t = p.tables[1]
+    try:
+        t = p.tables[1]
+    except IndexError as e:
+        print(html)
+        raise e
     last_title = ''
     for r in t:
         title = r[0]
