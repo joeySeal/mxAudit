@@ -25,7 +25,7 @@ class HTMLTableParser(HTMLParser):
         self._current_table = []
         self._current_row = []
         self._current_cell = []
-        self.tables = []
+        self.table = []
 
     def handle_starttag(self, tag, attrs):
         """ We need to remember the opening point for the content of interest.
@@ -66,7 +66,7 @@ class HTMLTableParser(HTMLParser):
             self._current_table.append(self._current_row)
             self._current_row = []
         elif tag == 'table':
-            self.tables.append(self._current_table)
+            self.table += self._current_table
             self._current_table = []
 
 
@@ -115,7 +115,7 @@ def process_item(item):
     p.feed(html)
 
     try:
-        t = p.tables[1]
+        t = p.table
     except IndexError as e:
         print(html)
         raise e
