@@ -148,6 +148,7 @@ def process_list(l):
             r = process_item(item)
             if r:
                 result.append(r)
+                print("Success: %s" % item['ip'])
         except IOError as e:
             print("IO error '%s' while trying to process IP: %s" % (e, item['ip']))
             result.append({'ip':item['ip'], 'status': 'IO ERROR: %s' % e})
@@ -172,7 +173,7 @@ def main():
             writer.writeheader()
             for r in result:
                 writer.writerow(r)
-            print("Success: %s" % r['ip'])
+
     else:
         print('No result data')
 
