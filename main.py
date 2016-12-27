@@ -136,6 +136,7 @@ def process_item(item):
             result[title] = r[1]
         last_title = title
     result['Listening Ports'] = '"%s"' % '\r\n'.join(result['Listening Ports'])
+    result['status'] = 'OK'
     return result
 
 
@@ -148,6 +149,7 @@ def process_list(l):
                 result.append(r)
         except IOError as e:
             print("IO error '%s' while trying to process IP: %s" % (e, item['ip']))
+            result.append({'ip':item['ip'], 'status': 'IO ERROR: %s' % e})
         except BaseException as e:
             print("Unknown error '%s' while trying to process IP: %s" % (e, item['ip']))
             raise e
@@ -158,7 +160,9 @@ def main():
     result = process_list(get_input_data())
     if result:
         with open('output.csv', 'w') as csvfile:
-            fieldnames = result[0].keys()
+            keys = list(result[0].keys())
+            keys.pop(keys.index('ip'))
+            fieldnames = ['ip', 'status']+keys
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
             writer.writeheader()
