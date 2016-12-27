@@ -161,7 +161,10 @@ def main():
     result = process_list(get_input_data())
     if result:
         with open('output.csv', 'w') as csvfile:
-            keys = list(result[0].keys())
+            keys = []
+            for n in result:
+                keys += list(n.keys())
+            keys = list(set(keys))
             keys.pop(keys.index('ip'))
             fieldnames = ['ip', 'status']+keys
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
