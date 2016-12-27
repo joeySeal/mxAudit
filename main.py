@@ -146,6 +146,7 @@ def process_list(l):
             print("IO error '%s' while trying to process IP: %s" % (e, item['ip']))
         except BaseException as e:
             print("Unknown error '%s' while trying to process IP: %s" % (e, item['ip']))
+            raise e
     return result
 
 
