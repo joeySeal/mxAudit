@@ -168,7 +168,7 @@ def main():
             keys = list(set(keys))
             keys.pop(keys.index('ip'))
             fieldnames = ['ip', 'status']+keys
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames, lineterminator='\n')
 
             writer.writeheader()
             for r in result:
