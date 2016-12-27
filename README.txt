@@ -15,5 +15,5 @@ url,login,password
 000.000.000.002:80,
 
 
-2. Navigate to the location where mxSurvery.py is stored and execute mxSurvery.py if everything is correct the script will generate the file output.csv
+2. Navigate to the location where main.py is stored and execute main.py if everything is correct the script will generate the file output.csv
 
