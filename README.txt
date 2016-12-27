@@ -1,5 +1,5 @@
 # mxAudit
-This tool retrieves all information from the mobotix camera info page and adds it to a csv file. Here is a sample ![Alt text](https://drive.google.com/file/d/0B_6kVQ1pek_6LWFzV3M1R2VHM0E/view?usp=sharing "Output")
+This tool retrieves all information from the mobotix camera info page and adds it to a csv file.
 
 Prerequisites
 Python 3.X (https://www.python.org/downloads/)
