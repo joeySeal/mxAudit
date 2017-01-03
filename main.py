@@ -161,7 +161,7 @@ def process_list(l):
 def main():
     result = process_list(get_input_data())
     if result:
-        with open('output.csv', 'w', newline='') as csvfile:
+        with open('output.csv', 'w', newline='', encoding='utf-8') as csvfile:
             keys = []
             for n in result:
                 keys += list(n.keys())
