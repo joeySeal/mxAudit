@@ -135,7 +135,7 @@ def process_item(item):
         else:
             result[title] = r[1]
         last_title = title
-    result['Listening Ports'] = '"%s"' % '\r\n'.join(result['Listening Ports'])
+    result['Listening Ports'] = '"%s"' % ', '.join(result['Listening Ports'])
     result['status'] = 'OK'
     return result
 
@@ -161,7 +161,7 @@ def process_list(l):
 def main():
     result = process_list(get_input_data())
     if result:
-        with open('output.csv', 'w') as csvfile:
+        with open('output.csv', 'w', newline='') as csvfile:
             keys = []
             for n in result:
                 keys += list(n.keys())
