@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import csv
+import ssl
 from urllib import request
 from html.parser import HTMLParser
 from html import unescape
@@ -86,13 +87,16 @@ def get_input_data():
 
 def _get_html(url, login, password):
     url = url + '/control/camerainfo'
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
     p = request.HTTPPasswordMgrWithDefaultRealm()
     p.add_password(None, url, login, password)
+    ssl_handler = request.HTTPSHandler(context=ctx)
     auth_handler = request.HTTPBasicAuthHandler(p)
-    opener = request.build_opener(auth_handler)
+    opener = request.build_opener(ssl_handler, auth_handler)
     request.install_opener(opener)
     return opener.open(url)
-
 
 def get_html(url, login, password):
     html = ''
