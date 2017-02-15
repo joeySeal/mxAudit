@@ -2,7 +2,7 @@
 import csv
 from urllib import request
 from html.parser import HTMLParser
-
+from html import unescape
 
 class HTMLTableParser(HTMLParser):
     """ This class serves as a html table parser. It is able to parse multiple
@@ -45,7 +45,7 @@ class HTMLTableParser(HTMLParser):
         """ Handle HTML encoded characters """
 
         if self._parse_html_entities:
-            self.handle_data(self.unescape('&#{};'.format(name)))
+            self.handle_data(unescape('&#{};'.format(name)))
 
     def handle_endtag(self, tag):
         """ Here we exit the tags. If the closing tag is </tr>, we know that we
@@ -76,10 +76,10 @@ def get_input_data():
         reader = csv.DictReader(csvfile)
         for row in reader:
             r = {
-                    'ip': row['ip'],
-                    'login': row['login'],
-                    'password': row['password'],
-                }
+                'ip': row['ip'],
+                'login': row['login'],
+                'password': row['password'],
+            }
             result.append(r)
     return result
 
@@ -87,21 +87,22 @@ def get_input_data():
 def _get_with_prefix(prefix, ip, login, password):
     url = prefix + ip + '/control/camerainfo'
     p = request.HTTPPasswordMgrWithDefaultRealm()
-    p.add_password(None, url, login, password);
+    p.add_password(None, url, login, password)
     auth_handler = request.HTTPBasicAuthHandler(p)
     opener = request.build_opener(auth_handler)
     request.install_opener(opener)
     return opener.open(url)
 
+
 def get_html(ip, login, password):
     html = ''
     try:
-         # try with https first:
-        print(' * Trying HTTPS...', end='' )
+        # try with https first:
+        print(' * Trying HTTPS...', end='')
         result = _get_with_prefix('https://', ip, login, password)
     except IOError:
         try:
-            print(' Trying HTTP...', end='' )
+            print(' Trying HTTP...', end='')
             result = _get_with_prefix('http://', ip, login, password)
         except IOError as e:
             raise IOError
@@ -132,13 +133,14 @@ def process_item(item):
         if len(r) < 2:
             continue
         # hack 'Listening Ports'
+        tmplt = '%s %s'
         if title == 'Listening Ports':
             if 'Listening Ports' not in result:
                 result['Listening Ports'] = []
-            result['Listening Ports'].append(r[1] + ' ' + r[2])
+            result['Listening Ports'].append()
         elif not title and last_title == 'Listening Ports':
             title = 'Listening Ports'
-            result['Listening Ports'].append(r[1]+' '+r[2])
+            result['Listening Ports'].append(tmplt % (r[1], r[2]))
         else:
             result[title] = r[1]
         last_title = title
@@ -150,7 +152,7 @@ def process_item(item):
 def process_list(l):
     result = []
     for item in l:
-        print('Processing %s' % item['ip'], end='' )
+        print('Processing %s' % item['ip'], end='')
         try:
             r = process_item(item)
             if r:
@@ -158,7 +160,7 @@ def process_list(l):
                 print("\nSuccess: %s" % item['ip'])
         except IOError as e:
             print("\nIO error '%s' while trying to process IP: %s" % (e, item['ip']))
-            result.append({'ip':item['ip'], 'status': 'IO ERROR: %s' % e})
+            result.append({'ip': item['ip'], 'status': 'IO ERROR: %s' % e})
         except BaseException as e:
             print("\nUnknown error '%s' while trying to process IP: %s" % (e, item['ip']))
             raise e
@@ -174,7 +176,7 @@ def main():
                 keys += list(n.keys())
             keys = list(set(keys))
             keys.pop(keys.index('ip'))
-            fieldnames = ['ip', 'status']+keys
+            fieldnames = ['ip', 'status'] + keys
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames, lineterminator='\n')
 
             writer.writeheader()
