@@ -137,7 +137,7 @@ def process_item(item):
         if title == 'Listening Ports':
             if 'Listening Ports' not in result:
                 result['Listening Ports'] = []
-            result['Listening Ports'].append()
+            result['Listening Ports'].append(tmplt % (r[1], r[2]))
         elif not title and last_title == 'Listening Ports':
             title = 'Listening Ports'
             result['Listening Ports'].append(tmplt % (r[1], r[2]))
