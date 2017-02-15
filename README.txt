@@ -17,3 +17,11 @@ http://000.000.000.002:80,
 
 2. Navigate to the location where main.py is stored and execute main.py if everything is correct the script will generate the file output.csv
 
+usage: main.py [-h] [-i INPUT] [-o OUTPUT]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i INPUT, --input INPUT
+                        specify name of input file, default: 'input.csv'
+  -o OUTPUT, --output OUTPUT
+                        specify name of output file, default: 'output.csv'
