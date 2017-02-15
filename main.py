@@ -76,7 +76,7 @@ def get_input_data():
         reader = csv.DictReader(csvfile)
         for row in reader:
             r = {
-                'ip': row['ip'],
+                'url': row['url'],
                 'login': row['login'],
                 'password': row['password'],
             }
@@ -84,8 +84,8 @@ def get_input_data():
     return result
 
 
-def _get_with_prefix(prefix, ip, login, password):
-    url = prefix + ip + '/control/camerainfo'
+def _get_html(url, login, password):
+    url = url + '/control/camerainfo'
     p = request.HTTPPasswordMgrWithDefaultRealm()
     p.add_password(None, url, login, password)
     auth_handler = request.HTTPBasicAuthHandler(p)
@@ -94,27 +94,17 @@ def _get_with_prefix(prefix, ip, login, password):
     return opener.open(url)
 
 
-def get_html(ip, login, password):
+def get_html(url, login, password):
     html = ''
-    try:
-        # try with https first:
-        print(' * Trying HTTPS...', end='')
-        result = _get_with_prefix('https://', ip, login, password)
-    except IOError:
-        try:
-            print(' Trying HTTP...', end='')
-            result = _get_with_prefix('http://', ip, login, password)
-        except IOError as e:
-            raise IOError
+    result = _get_html(url, login, password)
     html = result.read()
-
     return html
 
 
 def process_item(item):
-    html = get_html(item['ip'], item['login'], item['password'])
+    html = get_html(item['url'], item['login'], item['password'])
     result = {
-        'ip': item['ip'],
+        'url': item['url'],
     }
     if not html:
         return result
@@ -152,17 +142,17 @@ def process_item(item):
 def process_list(l):
     result = []
     for item in l:
-        print('Processing %s' % item['ip'], end='')
+        print('Processing %s' % item['url'], end='')
         try:
             r = process_item(item)
             if r:
                 result.append(r)
-                print("\nSuccess: %s" % item['ip'])
+                print("\nSuccess: %s" % item['url'])
         except IOError as e:
-            print("\nIO error '%s' while trying to process IP: %s" % (e, item['ip']))
-            result.append({'ip': item['ip'], 'status': 'IO ERROR: %s' % e})
+            print("\nIO error '%s' while trying to process URL: %s" % (e, item['url']))
+            result.append({'url': item['url'], 'status': 'IO ERROR: %s' % e})
         except BaseException as e:
-            print("\nUnknown error '%s' while trying to process IP: %s" % (e, item['ip']))
+            print("\nUnknown error '%s' while trying to process URL: %s" % (e, item['url']))
             raise e
     return result
 
@@ -175,8 +165,8 @@ def main():
             for n in result:
                 keys += list(n.keys())
             keys = list(set(keys))
-            keys.pop(keys.index('ip'))
-            fieldnames = ['ip', 'status'] + keys
+            keys.pop(keys.index('url'))
+            fieldnames = ['url', 'status'] + keys
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames, lineterminator='\n')
 
             writer.writeheader()
