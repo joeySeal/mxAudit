@@ -6,11 +6,11 @@ Python 3.X (https://www.python.org/downloads/)
 
  
 
-1. Create a csv file named in the same folder as main.py called input.csv with header rows for url,login,password each row should contain the cameras ip or hostname followed by :portNumber, user name, and password. If public access is enabled than leave username and password blank. If public access is disabled any user account that can load http://000.000.000.000/control/camerainfo will work.
+1. Create a csv file named in the same folder as main.py called input.csv with header rows for ip,login,password each row should contain the cameras ip or hostname followed by :portNumber, user name, and password. If public access is enabled than leave username and password blank. If public access is disabled any user account that can load http://000.000.000.000/control/camerainfo will work.
 
 In this example the first camera has public access disabled and the second has it enabled
 
-url,login,password
+ip,login,password
 000.000.000.001:80,admin,password
 000.000.000.002:80,
 
