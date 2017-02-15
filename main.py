@@ -4,6 +4,17 @@ import ssl
 from urllib import request
 from html.parser import HTMLParser
 from html import unescape
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-i", "--input", type=str, help="specify name of input file, default: 'input.csv'",
+                    default='input.csv')
+parser.add_argument("-o", "--output", type=str, help="specify name of output file, default: 'output.csv'",
+                    default='output.csv')
+args = parser.parse_args()
+INPUT_FILENAME = args.input
+OUTPUT_FILENAME = args.output
+
 
 class HTMLTableParser(HTMLParser):
     """ This class serves as a html table parser. It is able to parse multiple
@@ -73,7 +84,7 @@ class HTMLTableParser(HTMLParser):
 
 def get_input_data():
     result = []
-    with open('input.csv') as csvfile:
+    with open(INPUT_FILENAME) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             r = {
@@ -97,6 +108,7 @@ def _get_html(url, login, password):
     opener = request.build_opener(ssl_handler, auth_handler)
     request.install_opener(opener)
     return opener.open(url)
+
 
 def get_html(url, login, password):
     html = ''
@@ -164,7 +176,7 @@ def process_list(l):
 def main():
     result = process_list(get_input_data())
     if result:
-        with open('output.csv', 'w', newline='', encoding='utf-8') as csvfile:
+        with open(OUTPUT_FILENAME, 'w', newline='', encoding='utf-8') as csvfile:
             keys = []
             for n in result:
                 keys += list(n.keys())
