@@ -84,20 +84,27 @@ def get_input_data():
     return result
 
 
-def get_html(ip, login, password):
-    url = 'http://' + ip + '/control/camerainfo'
+def _get_with_prefix(prefix, ip, login, password):
+    url = prefix + ip + '/control/camerainfo'
     p = request.HTTPPasswordMgrWithDefaultRealm()
     p.add_password(None, url, login, password);
-
     auth_handler = request.HTTPBasicAuthHandler(p)
-
     opener = request.build_opener(auth_handler)
-
     request.install_opener(opener)
+    return opener.open(url)
 
+def get_html(ip, login, password):
     html = ''
-
-    result = opener.open(url)
+    try:
+         # try with https first:
+        print(' * Trying HTTPS...', end='' )
+        result = _get_with_prefix('https://', ip, login, password)
+    except IOError:
+        try:
+            print(' Trying HTTP...', end='' )
+            result = _get_with_prefix('http://', ip, login, password)
+        except IOError as e:
+            raise IOError
     html = result.read()
 
     return html
@@ -143,17 +150,17 @@ def process_item(item):
 def process_list(l):
     result = []
     for item in l:
-        print('Processing %s' % item['ip'])
+        print('Processing %s' % item['ip'], end='' )
         try:
             r = process_item(item)
             if r:
                 result.append(r)
-                print("Success: %s" % item['ip'])
+                print("\nSuccess: %s" % item['ip'])
         except IOError as e:
-            print("IO error '%s' while trying to process IP: %s" % (e, item['ip']))
+            print("\nIO error '%s' while trying to process IP: %s" % (e, item['ip']))
             result.append({'ip':item['ip'], 'status': 'IO ERROR: %s' % e})
         except BaseException as e:
-            print("Unknown error '%s' while trying to process IP: %s" % (e, item['ip']))
+            print("\nUnknown error '%s' while trying to process IP: %s" % (e, item['ip']))
             raise e
     return result
 
